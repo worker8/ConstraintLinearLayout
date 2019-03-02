@@ -32,17 +32,20 @@ class ConstraintLinearLayout @JvmOverloads constructor(
 
     override fun removeView(toBeRemovedView: View?) {
         toBeRemovedView?.also { _toBeRemovedView ->
-
             val set = ConstraintSet()
             set.clone(this@ConstraintLinearLayout)
             val tobeRemovedIndex = indexOfChild(_toBeRemovedView)
+            set.clear(_toBeRemovedView.id, ConstraintSet.TOP)
+            set.clear(_toBeRemovedView.id, ConstraintSet.BOTTOM)
 
             if (tobeRemovedIndex == 0 && childCount > 1) { // first item
                 val nextChild = getChildAt(1)
+                set.clear(nextChild.id, ConstraintSet.TOP)
                 set.connect(nextChild.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
             } else if (tobeRemovedIndex > 0 && tobeRemovedIndex < childCount - 1) { // in between
                 val previousChild = getChildAt(tobeRemovedIndex - 1)
                 val nextChild = getChildAt(tobeRemovedIndex + 1)
+                set.clear(nextChild.id, ConstraintSet.TOP)
                 set.connect(nextChild.id, ConstraintSet.TOP, previousChild.id, ConstraintSet.BOTTOM)
             }
             super.removeView(_toBeRemovedView)
